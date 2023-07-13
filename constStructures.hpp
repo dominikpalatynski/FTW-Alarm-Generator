@@ -16,6 +16,13 @@ struct FormatText{
     std::string thirdS = " <alarm history-size=\"128\" capacity-high-warning=\"90\" capacity-high-high-warning=\"99\"";
     std::string fourthS = "display-name=\"\" hold-time=\"250\" max-update-rate=\"1,00\" embedded-server-update-rate=\"1,00\" silence-tag=\"\" remote-silence-exp=\"\" remote-ack-all-exp=\"\"";
     std::string fifthS = "status-reset-tag=\"\" remote-status-reset-exp=\"\" close-display-tag=\"\" remote-close-display-exp=\"\" use-alarm-identifier=\"false\" capacity-high-warning-tag=\"\" capacity-high-high-warning-tag=\"\" capacity-overrun-tag=\"\" remote-clear-history-exp=\"?\">\n";
+    std::string sixthS = "</triggers>";
+    std::string seventhS = "<messages>";
+    std::string eightS = "</messages>";
+    std::string ninethS = "</alarm";
+    std::string tenthS = "</alarms>";
+     std::string eleventhS = "<triggers>";
+
     std::vector<std::string> beginOfFrame;
 
     FormatText():beginOfFrame({firstS,secondS,thirdS,fourthS,fifthS}){};

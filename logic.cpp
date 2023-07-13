@@ -68,7 +68,7 @@
         for (const auto& el : frameStr.beginOfFrame) {
                 blankFrame += el;
         }
-        blankFrame += "\n";
+        blankFrame += "\n" + frameStr.eleventhS + "\n";
 
         std::string alarmsString = std::accumulate(generatedAlarms.begin(), generatedAlarms.end(), std::string(),
                 [](const std::string& accumulated, const Alarm& alarm) {
@@ -76,13 +76,15 @@
                 }
         );
 
-        blankFrame += alarmsString + "\n";
+        blankFrame += alarmsString + "\n" + frameStr.sixthS + "\n" + frameStr.seventhS + "\n";
+      
 
-         alarmsString = std::accumulate(generatedMessages.begin(), generatedMessages.end(), std::string(),
+          alarmsString = std::accumulate(generatedMessages.begin(), generatedMessages.end(), std::string(),
                 [](const std::string& accumulated, const Message& message) {
                 return accumulated + message.combinedLine+ "\n";
                 });
         blankFrame += alarmsString + "\n";
+        blankFrame += frameStr.eightS + "\n" + frameStr.ninethS + "\n" + frameStr.tenthS;
         }
 
         void Aplication::printFrameInConsole(){
