@@ -4,6 +4,9 @@
 #include <utility>
 #include <algorithm>
 #include <numeric>
+#include <fstream>
+#include <map>
+#include <functional>
 #include "constStructures.hpp"
 
 
@@ -49,6 +52,8 @@ public:
         void prepareStrings();
         void printFrameInConsole();
         void prepareBlankFrame();
+        void printBlankFrametoXmlFile();
+        void menu();
  
 
 }; 

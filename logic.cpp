@@ -66,7 +66,7 @@
         void Aplication::prepareBlankFrame() {
         FormatText frameStr;
         for (const auto& el : frameStr.beginOfFrame) {
-                blankFrame += el;
+                blankFrame += " "  + el;
         }
         blankFrame += "\n" + frameStr.eleventhS + "\n";
 
@@ -92,6 +92,50 @@
                prepareBlankFrame();
                 std::cout<<blankFrame;
             
+        }
+        void Aplication::printBlankFrametoXmlFile() {
+                prepareStrings();
+                prepareBlankFrame();
+                std::string filename;
+                std::cout<<"Give file name";
+                std::cin>>filename;
+                std::ofstream file(filename, std::ios::out);
+                if (file.is_open()) {
+                        file << blankFrame;
+                        file.close();
+                        std::cout << "Pomyślnie utworzono i zapisano do pliku " << filename << std::endl;
+                } else {
+                        std::cerr << "Nie można utworzyć pliku " << filename << " do zapisu" << std::endl;
+                }
+        }
+        void Aplication::menu(){
+                std::map<int,std::function<void()>> menuOption = {
+                        {1,[&](){printFrameInConsole();}},
+                        {2,[&](){printBlankFrametoXmlFile();}}
+                };
+                int choice;
+                                        std::cout<<"Choose option \n"
+                                        <<"1: Print alarm frame in console and copy by your own to xml file \n"
+                                        <<"2: Select file name then alarm frame will be printed to xml file \n"
+                                        <<"0: Leave\n";
+                do{
+                    
+                        std::cin>>choice;
+                        auto it = menuOption.find(choice);
+                        if(it != menuOption.end()){
+                                it->second();
+                                std::cout<<"Program Complete";
+                                break;
+                        }
+                        else if(choice !=0 ){
+                                std::cout<<"Incorrect choice";
+                        }
+                        
+
+                }
+                while (choice != 0);
+             
+                
         }
 
 

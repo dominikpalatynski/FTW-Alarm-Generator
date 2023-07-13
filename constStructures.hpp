@@ -19,7 +19,7 @@ struct FormatText{
     std::string sixthS = "</triggers>";
     std::string seventhS = "<messages>";
     std::string eightS = "</messages>";
-    std::string ninethS = "</alarm";
+    std::string ninethS = "</alarm>";
     std::string tenthS = "</alarms>";
      std::string eleventhS = "<triggers>";
 
