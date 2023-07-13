@@ -63,13 +63,33 @@
 
               }  
         }
+        void Aplication::prepareBlankFrame() {
+        FormatText frameStr;
+        for (const auto& el : frameStr.beginOfFrame) {
+                blankFrame += el;
+        }
+        blankFrame += "\n";
+
+        std::string alarmsString = std::accumulate(generatedAlarms.begin(), generatedAlarms.end(), std::string(),
+                [](const std::string& accumulated, const Alarm& alarm) {
+                return accumulated + alarm.combinedLine + "\n" ;
+                }
+        );
+
+        blankFrame += alarmsString + "\n";
+
+         alarmsString = std::accumulate(generatedMessages.begin(), generatedMessages.end(), std::string(),
+                [](const std::string& accumulated, const Message& message) {
+                return accumulated + message.combinedLine+ "\n";
+                });
+        blankFrame += alarmsString + "\n";
+        }
+
         void Aplication::printFrameInConsole(){
-                   for(auto el:generatedAlarms){
-                        std::cout<<el.combinedLine<<std::endl;
-                }
-                     for(auto el:generatedMessages){
-                        std::cout<<el.combinedLine<<std::endl;
-                }
+                prepareStrings();
+               prepareBlankFrame();
+                std::cout<<blankFrame;
+            
         }
 
 

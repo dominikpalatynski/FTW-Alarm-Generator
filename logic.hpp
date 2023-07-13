@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <algorithm>
+#include <numeric>
 #include "constStructures.hpp"
 
 
@@ -39,12 +41,14 @@ class Aplication{
 private:
         int numOfAlarms;
         Tag tag;
+        std::string blankFrame;
 public:
         std::vector<Alarm> generatedAlarms;
         std::vector<Message> generatedMessages;
         Aplication(const int &num, const Tag &tags);
         void prepareStrings();
         void printFrameInConsole();
+        void prepareBlankFrame();
  
 
 }; 
