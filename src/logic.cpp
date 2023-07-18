@@ -153,30 +153,39 @@
         void Aplication::updateFile(){
                 std::string fileName;
                 int lastIndexNumber;
-               Alarm& lastAlarm = *(++generatedAlarms.rbegin());
+               
                 std::cout<<"Give file name to update \n";
                 std::cin>>fileName;
-
+                
                 readA_MFromFile(fileName,"<triggers>","</triggers>",'a');
                 readA_MFromFile(fileName,"<messages>","</messages>",'m');
 
+                std::shared_ptr<Alarm> lastAlarm = std::make_shared<Alarm>(*(++generatedAlarms.rbegin()));
+                
               if (!generatedAlarms.empty()) {
-                lastIndexNumber = readLastIndex("ger id=\"T173\" type=\"v");
-                std::cout<<"Index number"<<lastIndexNumber;
-    } else {
-        std::cout << "No alarms found.\n";
-    }
+                lastIndexNumber = readLastIndex(lastAlarm->combinedLine);
+                
+                } else {
+                        std::cout << "No alarms found.\n";
+                }
 
      
         }
         int Aplication::readLastIndex(const std::string & combLine){
                 std::size_t startVal = combLine.find("id=\"T");
+                std::size_t numberStart;
+                std::size_t numberEnd;
 
                 if(startVal != std::string::npos){
                         std::size_t endPos = combLine.find("\"", startVal);
+
                         if(endPos != std::string::npos){
-                                std::string indexNumber = combLine.substr(startVal + 4,startVal - endPos -4);
+                                numberStart = combLine.find_first_of("0123456789",startVal + 5);
+                                numberEnd = combLine.find_first_not_of("0123456789",numberStart);
+                                std::string indexNumber = combLine.substr(numberStart, numberEnd - numberStart);
+                                
                                 return std::stoi(indexNumber);
+                              
                         }
 
                 }
