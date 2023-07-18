@@ -5,4 +5,4 @@ Application to generate alarms in factory talk view.
 If you use mingw compiler you have to use  this  this command.
 
 ***g++ main.cpp logic.cpp -o program***
-# to crate make Files you have to use this command "cmake -G "MinGW Makefiles" .."
+# to crate make Files you have to use this command "cmake -G "MinGW Makefiles" .. then "mingw32-make run" or "mmake run" "

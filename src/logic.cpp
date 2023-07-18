@@ -129,7 +129,12 @@
                 while(std::getline(file,line)){
                         if(!insideTrigger && line.find(startMarker) != std::string::npos){
                                 insideTrigger = true;
+                                continue;
                         }
+                        if(line.find(endMarker) != std::string::npos){
+                                insideTrigger = false;
+                                break;
+                         }
                         if(insideTrigger){
                                 if(choice == 'a'){
                                 generatedAlarms.emplace_back(line);
@@ -137,28 +142,43 @@
                                 else if(choice == 'm'){
                                 generatedMessages.emplace_back(line);  
                                 }
-                                if(line.find(endMarker) != std::string::npos){
-                                        insideTrigger = false;
-                                        break;
-                                }
+                            
                         }
+
                 }
-                for(auto el:generatedAlarms){
-                        std::cout<<el.combinedLine<<"\n";
-                }
+        
         
 
         }
         void Aplication::updateFile(){
                 std::string fileName;
+                int lastIndexNumber;
+               Alarm& lastAlarm = *(++generatedAlarms.rbegin());
                 std::cout<<"Give file name to update \n";
                 std::cin>>fileName;
+
+                readA_MFromFile(fileName,"<triggers>","</triggers>",'a');
                 readA_MFromFile(fileName,"<messages>","</messages>",'m');
-                auto it = generatedMessages.begin();
-                for(auto &el:generatedAlarms){
-                        std::cout<<el.combinedLine<<"\n";
-                        std::cout<<it->combinedLine<<" \n ";
-                        it++;
+
+              if (!generatedAlarms.empty()) {
+                lastIndexNumber = readLastIndex("ger id=\"T173\" type=\"v");
+                std::cout<<"Index number"<<lastIndexNumber;
+    } else {
+        std::cout << "No alarms found.\n";
+    }
+
+     
+        }
+        int Aplication::readLastIndex(const std::string & combLine){
+                std::size_t startVal = combLine.find("id=\"T");
+
+                if(startVal != std::string::npos){
+                        std::size_t endPos = combLine.find("\"", startVal);
+                        if(endPos != std::string::npos){
+                                std::string indexNumber = combLine.substr(startVal + 4,startVal - endPos -4);
+                                return std::stoi(indexNumber);
+                        }
+
                 }
         }
 
@@ -166,7 +186,7 @@
                 std::map<int,std::function<void()>> menuOption = {
                         {1,[&](){printFrameInConsole();}},
                         {2,[&](){printBlankFrametoXmlFile();}},
-                        {3,[&](){ readA_MFromFile("file.xml","<messages>","</messages>",'m');}}
+                        {3,[&](){updateFile();}}
 
                 };
                 int choice;

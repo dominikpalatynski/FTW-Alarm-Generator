@@ -8,6 +8,7 @@
 #include <map>
 #include <functional>
 #include <sstream>
+#include <memory>
 #include "constStructures.hpp"
 
 
@@ -59,6 +60,7 @@ public:
         void printBlankFrametoXmlFile();
         void updateFile();
         void readA_MFromFile(const std::string &fileName,const std::string &startMarker,const std::string &endMarker,char choice);
+        int readLastIndex(const std::string & combLine);
         void menu();
  
 
