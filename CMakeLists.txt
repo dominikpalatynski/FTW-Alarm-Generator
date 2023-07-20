@@ -1,12 +1,24 @@
 cmake_minimum_required(VERSION 3.18)
-set( CMAKE_CXX_COMPILER "C:/MinGW/bin/g++.exe" )
-set( CMAKE_C_COMPILER "C:/MinGW/bin/gcc.exe" )
-project(GenerateAlarms)
-add_executable(${PROJECT_NAME} src/main.cpp src/logic.cpp)
+project(GA)
 
-add_custom_target(run
-    COMMAND ${PROJECT_NAME}.exe
-    DEPENDS ${PROJECT_NAME}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Running ${PROJECT_NAME}..."
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG        main # release-1.10.0
 )
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+add_executable(${PROJECT_NAME} src/main.cpp src/logic.cpp)
+add_executable(${PROJECT_NAME}-ut src/test.cpp )
+
+target_link_libraries(${PROJECT_NAME}-ut gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(${PROJECT_NAME}-ut)
