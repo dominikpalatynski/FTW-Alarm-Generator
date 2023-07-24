@@ -25,17 +25,15 @@ std::pair<std::string, int> Tag::getTypeInfo() const
         }
 }
 
-Alarm::Alarm(const std::string &trigger, const std::string &tag, const std::string &label)
-    : combinedLine(trigger + constString.text_1 + tag + constString.text_2 + label + constString.text_3), tagName(tag) {}
+Alarm::Alarm(const std::string &trigger, const std::string &tag, const std::string &label,int idNumber)
+    : combinedLine(trigger + constString.text_1 + tag + constString.text_2 + label + constString.text_3),
+    alarmVariables(idNumber,AlarmValues(tag)) {}
 
 Alarm::Alarm(const std::string &combine) : combinedLine(combine){};
-std::string Alarm::getTagName()
-{
-        return tagName;
-}
 
-Message::Message(const std::string &M1, const std::string &M2)
-    : combinedLine(M1 + M2 + constString.text_1) {}
+
+Message::Message(const std::string &M1, const std::string &M2,int idNumber)
+    : combinedLine(M1 + M2 + constString.text_1),messageVariables(idNumber,MessageValues(constString.text_1)) {}
 Message::Message(const std::string &combine) : combinedLine(combine){};
 
 Aplication::Aplication(const int &num, const Tag &tags) : numOfAlarms(num), tag(tags) {}
@@ -63,8 +61,9 @@ void Aplication::prepareStrings()
                 {
                         byteCounter++;
                 }
-                generatedAlarms.emplace_back(T1 + std::to_string(i + 1), tag.name + '[' + std::to_string(byteCounter - 1) + "]." + std::to_string(bitCounter), T2 + std::to_string(i + 1));
-                generatedMessages.emplace_back(M1 + std::to_string(i + 1), M2 + std::to_string(i + 1));
+                generatedAlarms.emplace_back(T1 + std::to_string(i + 1), tag.name
+                 + '[' + std::to_string(byteCounter - 1) + "]." + std::to_string(bitCounter), T2 + std::to_string(i + 1),i);
+                generatedMessages.emplace_back(M1 + std::to_string(i + 1), M2 + std::to_string(i + 1),i);
                 prev = i % bitValue;
                 bitCounter++;
         }

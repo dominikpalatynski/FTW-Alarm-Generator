@@ -31,8 +31,11 @@ struct FormatText
 struct MessageValues
 {
     std::string messageText;
+    MessageValues(const std::string& messageTxt):messageText(messageTxt){};
+
 };
 struct AlarmValues
 {
     std::string tagName;
+    AlarmValues(const std::string& tagName):tagName(tagName){};
 };

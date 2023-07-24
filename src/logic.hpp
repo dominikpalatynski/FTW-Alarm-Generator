@@ -31,9 +31,9 @@ private:
 
 public:
     std::string combinedLine;
-    Alarm(const std::string &trigger, const std::string &tag, const std::string &label);
+    Alarm(const std::string &trigger, const std::string &tag, const std::string &label,int idNumber);
     Alarm(const std::string &combined);
-    std::string getTagName();
+    
 };
 class Message
 {
@@ -43,7 +43,7 @@ private:
 
 public:
     std::string combinedLine;
-    Message(const std::string &M1, const std::string &M2);
+    Message(const std::string &M1, const std::string &M2,int idNumber);
     Message(const std::string &combine);
 };
 class Aplication
