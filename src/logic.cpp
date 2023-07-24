@@ -25,16 +25,78 @@ std::pair<std::string, int> Tag::getTypeInfo() const
         }
 }
 
-Alarm::Alarm(const std::string &trigger, const std::string &tag, const std::string &label,int idNumber)
+Alarm::Alarm(const std::string &trigger, const std::string &tag, const std::string &label, int idNumber)
     : combinedLine(trigger + constString.text_1 + tag + constString.text_2 + label + constString.text_3),
-    alarmVariables(idNumber,AlarmValues(tag)) {}
+      alarmVariables(idNumber, AlarmValues(tag)) {}
 
-Alarm::Alarm(const std::string &combine) : combinedLine(combine){};
+Alarm::Alarm(const std::string &combine) : combinedLine(combine),
+                                           alarmVariables(readLastIndex(combinedLine, "id=\"T"), AlarmValues(findPhrase(combine, "exp=\"{::", "}"))){};
+int Alarm::readLastIndex(const std::string &combLine, const std::string &startValue)
+{
+        std::size_t startVal = combLine.find(startValue);
+        std::size_t numberStart;
+        std::size_t numberEnd;
 
+        if (startVal != std::string::npos)
+        {
+                std::size_t endPos = combLine.find("\"", startVal);
 
-Message::Message(const std::string &M1, const std::string &M2,int idNumber)
-    : combinedLine(M1 + M2 + constString.text_1),messageVariables(idNumber,MessageValues(constString.text_1)) {}
-Message::Message(const std::string &combine) : combinedLine(combine){};
+                if (endPos != std::string::npos)
+                {
+                        numberStart = combLine.find_first_of("0123456789", startVal + 5);
+                        numberEnd = combLine.find_first_not_of("0123456789", numberStart);
+                        std::string indexNumber = combLine.substr(numberStart, numberEnd - numberStart);
+
+                        return std::stoi(indexNumber);
+                }
+        }
+}
+std::string Alarm::findPhrase(const std::string &combine, const std::string &open, const std::string &end)
+{
+        std::size_t startVal = combine.find(open);
+        if (startVal != std::string::npos)
+        {
+                std::size_t endPos = combine.find(end, startVal);
+                return combine.substr(startVal + open.size(), endPos - startVal - open.size());
+        }
+}
+std::pair<int, AlarmValues> Alarm::getAlarVariables()
+{
+        return alarmVariables;
+}
+Message::Message(const std::string &M1, const std::string &M2, int idNumber)
+    : combinedLine(M1 + M2 + constString.text_1), messageVariables(idNumber, MessageValues(constString.text_1)) {}
+Message::Message(const std::string &combine) : combinedLine(combine),
+                                               messageVariables({readLastIndex(combinedLine, "id=\"T"), MessageValues(findPhrase(combine, "text=\"", "\"/"))}){};
+int Message::readLastIndex(const std::string &combLine, const std::string &startValue)
+{
+        std::size_t startVal = combLine.find(startValue);
+        std::size_t numberStart;
+        std::size_t numberEnd;
+
+        if (startVal != std::string::npos)
+        {
+                std::size_t endPos = combLine.find("\"", startVal);
+
+                if (endPos != std::string::npos)
+                {
+                        numberStart = combLine.find_first_of("0123456789", startVal + 5);
+                        numberEnd = combLine.find_first_not_of("0123456789", numberStart);
+                        std::string indexNumber = combLine.substr(numberStart, numberEnd - numberStart);
+
+                        return std::stoi(indexNumber);
+                }
+        }
+}
+std::string Message::findPhrase(const std::string &combine, const std::string &open, const std::string &end)
+{
+        std::size_t startVal = combine.find(open);
+        if (startVal != std::string::npos)
+        {
+                std::size_t endPos = combine.find(end, startVal);
+                return combine.substr(startVal + open.size(), endPos - startVal - open.size());
+        }
+}
 
 Aplication::Aplication(const int &num, const Tag &tags) : numOfAlarms(num), tag(tags) {}
 void Aplication::prepareStrings()
@@ -61,9 +123,8 @@ void Aplication::prepareStrings()
                 {
                         byteCounter++;
                 }
-                generatedAlarms.emplace_back(T1 + std::to_string(i + 1), tag.name
-                 + '[' + std::to_string(byteCounter - 1) + "]." + std::to_string(bitCounter), T2 + std::to_string(i + 1),i);
-                generatedMessages.emplace_back(M1 + std::to_string(i + 1), M2 + std::to_string(i + 1),i);
+                generatedAlarms.emplace_back(T1 + std::to_string(i + 1), tag.name + '[' + std::to_string(byteCounter - 1) + "]." + std::to_string(bitCounter), T2 + std::to_string(i + 1), i);
+                generatedMessages.emplace_back(M1 + std::to_string(i + 1), M2 + std::to_string(i + 1), i);
                 prev = i % bitValue;
                 bitCounter++;
         }
@@ -172,21 +233,24 @@ void Aplication::updateFile()
 
         readA_MFromFile(fileName, "<triggers>", "</triggers>", 'a');
         readA_MFromFile(fileName, "<messages>", "</messages>", 'm');
-
-        std::shared_ptr<Alarm> lastAlarm = std::make_shared<Alarm>(*(++generatedAlarms.rbegin()));
-
-        if (!generatedAlarms.empty())
+        for (auto el : generatedAlarms)
         {
-                lastIndexNumber = readLastIndex(lastAlarm->combinedLine);
+                std::cout << el.getAlarVariables().first << " " << el.getAlarVariables().second.tagName << "\n";
         }
-        else
-        {
-                std::cout << "No alarms found.\n";
-        }
+        // std::shared_ptr<Alarm> lastAlarm = std::make_shared<Alarm>(*(++generatedAlarms.rbegin()));
+
+        // if (!generatedAlarms.empty())
+        // {
+        //         lastIndexNumber = readLastIndex(lastAlarm->combinedLine);
+        // }
+        // else
+        // {
+        //         std::cout << "No alarms found.\n";
+        // }
 }
-int Aplication::readLastIndex(const std::string &combLine)
+int Aplication::readLastIndex(const std::string &combLine, const std::string &startValue)
 {
-        std::size_t startVal = combLine.find("id=\"T");
+        std::size_t startVal = combLine.find(startValue);
         std::size_t numberStart;
         std::size_t numberEnd;
 

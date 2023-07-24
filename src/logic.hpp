@@ -31,9 +31,11 @@ private:
 
 public:
     std::string combinedLine;
-    Alarm(const std::string &trigger, const std::string &tag, const std::string &label,int idNumber);
+    Alarm(const std::string &trigger, const std::string &tag, const std::string &label, int idNumber);
     Alarm(const std::string &combined);
-    
+    int readLastIndex(const std::string &combLine, const std::string &startValue);
+    std::string findPhrase(const std::string &combine, const std::string &open, const std::string &end);
+    std::pair<int, AlarmValues> getAlarVariables();
 };
 class Message
 {
@@ -43,8 +45,10 @@ private:
 
 public:
     std::string combinedLine;
-    Message(const std::string &M1, const std::string &M2,int idNumber);
+    Message(const std::string &M1, const std::string &M2, int idNumber);
     Message(const std::string &combine);
+    int readLastIndex(const std::string &combLine, const std::string &startValue);
+    std::string findPhrase(const std::string &combine, const std::string &open, const std::string &end);
 };
 class Aplication
 {
@@ -64,6 +68,7 @@ public:
     void printBlankFrametoXmlFile();
     void updateFile();
     void readA_MFromFile(const std::string &fileName, const std::string &startMarker, const std::string &endMarker, char choice);
-    int readLastIndex(const std::string &combLine);
+    int readLastIndex(const std::string &combLine, const std::string &startValue);
+    std::string findPhrase(const std::string &combine, const std::string &open, const std::string &end);
     void menu();
 };
