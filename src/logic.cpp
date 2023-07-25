@@ -28,9 +28,14 @@ std::pair<std::string, int> Tag::getTypeInfo() const
 Alarm::Alarm(const std::string &trigger, const std::string &tag, const std::string &label, int idNumber)
     : combinedLine(trigger + constString.text_1 + tag + constString.text_2 + label + constString.text_3),
       alarmVariables(idNumber, AlarmValues(tag)) {}
+Alarm::Alarm(const std::string &combine)
+    : alarmVariables(readLastIndex(combine, "id=\"T"), AlarmValues(findPhrase(combine, "exp=\"{::", "}"))),
+      combinedLine(combine)
+{
 
-Alarm::Alarm(const std::string &combine) : combinedLine(combine),
-                                           alarmVariables(readLastIndex(combinedLine, "id=\"T"), AlarmValues(findPhrase(combine, "exp=\"{::", "}"))){};
+
+}
+
 int Alarm::readLastIndex(const std::string &combLine, const std::string &startValue)
 {
         std::size_t startVal = combLine.find(startValue);
@@ -50,6 +55,7 @@ int Alarm::readLastIndex(const std::string &combLine, const std::string &startVa
                         return std::stoi(indexNumber);
                 }
         }
+        return -1;
 }
 std::string Alarm::findPhrase(const std::string &combine, const std::string &open, const std::string &end)
 {
@@ -66,8 +72,8 @@ std::pair<int, AlarmValues> Alarm::getAlarVariables()
 }
 Message::Message(const std::string &M1, const std::string &M2, int idNumber)
     : combinedLine(M1 + M2 + constString.text_1), messageVariables(idNumber, MessageValues(constString.text_1)) {}
-Message::Message(const std::string &combine) : combinedLine(combine),
-                                               messageVariables({readLastIndex(combinedLine, "id=\"T"), MessageValues(findPhrase(combine, "text=\"", "\"/"))}){};
+Message::Message(const std::string &combine) :  messageVariables({readLastIndex(combine, "id=\"M"), MessageValues(findPhrase(combine, "text=\"", "\"/"))}),
+        combinedLine(combine){};
 int Message::readLastIndex(const std::string &combLine, const std::string &startValue)
 {
         std::size_t startVal = combLine.find(startValue);
@@ -192,36 +198,50 @@ void Aplication::readA_MFromFile(const std::string &fileName, const std::string 
 {
         std::string line;
         bool insideTrigger = false;
+        bool foundEndMarker = false;
         std::ifstream file(fileName);
         if (!file.is_open())
         {
                 std::cerr << "Cannot oppen this file" << std::endl;
         }
-
+        int i = 0;
         while (std::getline(file, line))
-        {
+        {            if (line.empty())
+            {
+                continue; // skipping empty line
+            }
+                
                 if (!insideTrigger && line.find(startMarker) != std::string::npos)
                 {
                         insideTrigger = true;
+                       
                         continue;
                 }
                 if (line.find(endMarker) != std::string::npos)
                 {
                         insideTrigger = false;
+                        foundEndMarker = true;
+                        std::cout<<"AddingDone"<<"\n";
                         break;
                 }
+              
                 if (insideTrigger)
                 {
                         if (choice == 'a')
-                        {
+                        {      
                                 generatedAlarms.emplace_back(line);
                         }
                         else if (choice == 'm')
                         {
                                 generatedMessages.emplace_back(line);
+                               
+
                         }
                 }
+             
+             
         }
+      
 }
 void Aplication::updateFile()
 {
@@ -233,9 +253,9 @@ void Aplication::updateFile()
 
         readA_MFromFile(fileName, "<triggers>", "</triggers>", 'a');
         readA_MFromFile(fileName, "<messages>", "</messages>", 'm');
-        for (auto el : generatedAlarms)
+        for (auto el : generatedMessages)
         {
-                std::cout << el.getAlarVariables().first << " " << el.getAlarVariables().second.tagName << "\n";
+                std::cout << el.combinedLine<<" \n";
         }
         // std::shared_ptr<Alarm> lastAlarm = std::make_shared<Alarm>(*(++generatedAlarms.rbegin()));
 
