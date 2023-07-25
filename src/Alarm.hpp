@@ -24,4 +24,6 @@ public:
     int readLastIndex(const std::string &combLine, const std::string &startValue);
     std::string findPhrase(const std::string &combine, const std::string &open, const std::string &end);
     std::pair<int, AlarmValues> getAlarVariables();
+    void setAlarmVariables(const std::string &value);
+    void replace(const std::string &newValue);
 };

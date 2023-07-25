@@ -44,3 +44,10 @@ std::pair<int, AlarmValues> Alarm::getAlarVariables()
 {
         return alarmVariables;
 }
+    void Alarm::setAlarmVariables (const std::string &value){
+        alarmVariables.second.tagName = value;
+    }
+    void Alarm::replace (const std::string &newValue){
+        size_t startPos =  combinedLine.find( alarmVariables.second.tagName);
+        combinedLine.replace(startPos,newValue.length(),newValue);
+    }
