@@ -13,12 +13,19 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+add_library(SRC STATIC src/Alarm.cpp src/Message.cpp src/Application.cpp src/Tag.cpp)
+
 enable_testing()
 
-add_executable(${PROJECT_NAME} src/main.cpp src/logic.cpp)
+
+
+add_executable(${PROJECT_NAME} src/main.cpp )
 add_executable(${PROJECT_NAME}-ut src/test.cpp )
 
+target_link_libraries(${PROJECT_NAME} SRC )
 target_link_libraries(${PROJECT_NAME}-ut gtest_main)
+
+
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME}-ut)

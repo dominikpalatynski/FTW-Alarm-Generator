@@ -1,5 +1,6 @@
+#pragma once
 #include <iostream>
-
+#include <vector>
 struct ConstAlarmText
 {
     const std::string text_1 = "\" type=\"value\" ack-all-value=\"0\" use-ack-all=\"false\" ack-tag=\"\" exp=\"{::";
