@@ -9,6 +9,8 @@
 #include <functional>
 #include <sstream>
 #include <memory>
+#include <map>
+#include <tuple>
 #include "constStructures.hpp"
 #include "Message.hpp"
 #include "Alarm.hpp"
@@ -20,6 +22,7 @@ private:
     Tag tag;
     std::string blankFrame;
     std::stringstream blankStream;
+    std::map<std::string,std::tuple<std::string,bool>> dataToUpdate;
 
 public:
     std::vector<Alarm> generatedAlarms;
@@ -33,5 +36,6 @@ public:
     void readA_MFromFile(const std::string &fileName, const std::string &startMarker, const std::string &endMarker, char choice);
     int readLastIndex(const std::string &combLine, const std::string &startValue);
     std::string findPhrase(const std::string &combine, const std::string &open, const std::string &end);
+    void readFromCsv(const std::string &fileName);
     void menu();
 };

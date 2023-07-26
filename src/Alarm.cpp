@@ -48,6 +48,9 @@ std::pair<int, AlarmValues> Alarm::getAlarVariables()
         alarmVariables.second.tagName = value;
     }
     void Alarm::replace (const std::string &newValue){
+
         size_t startPos =  combinedLine.find( alarmVariables.second.tagName);
         combinedLine.replace(startPos,newValue.length(),newValue);
+        setAlarmVariables(newValue);
+
     }

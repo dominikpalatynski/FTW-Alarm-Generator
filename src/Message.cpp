@@ -32,3 +32,16 @@ std::string Message::findPhrase(const std::string &combine, const std::string &o
                 return combine.substr(startVal + open.size(), endPos - startVal - open.size());
         }
 }
+    std::pair<int, MessageValues> Message::getAlarVariables(){
+        return messageVariables;
+    }
+        void Message::setMessageVariables(const std::string &value){
+                messageVariables.second.messageText = value;
+        }
+    void Message::replace(const std::string &newValue){
+        size_t startPos =  combinedLine.find( messageVariables.second.messageText);
+         size_t endPos = startPos + messageVariables.second.messageText.length();
+        combinedLine.replace(startPos, endPos - startPos, newValue);
+        setMessageVariables(newValue);
+    }
+

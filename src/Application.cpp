@@ -153,16 +153,16 @@ void Aplication::updateFile()
         {
                 std::cout << el.combinedLine<<" \n";
         }
-        // std::shared_ptr<Alarm> lastAlarm = std::make_shared<Alarm>(*(++generatedAlarms.rbegin()));
+        std::shared_ptr<Alarm> lastAlarm = std::make_shared<Alarm>(*(++generatedAlarms.rbegin()));
 
-        // if (!generatedAlarms.empty())
-        // {
-        //         lastIndexNumber = readLastIndex(lastAlarm->combinedLine);
-        // }
-        // else
-        // {
-        //         std::cout << "No alarms found.\n";
-        // }
+        if (!generatedAlarms.empty())
+        {
+                lastIndexNumber = readLastIndex(lastAlarm->combinedLine,"id=\"T");
+        }
+        else
+        {
+                std::cout << "No alarms found.\n";
+        }
 }
 int Aplication::readLastIndex(const std::string &combLine, const std::string &startValue)
 {
@@ -184,6 +184,27 @@ int Aplication::readLastIndex(const std::string &combLine, const std::string &st
                 }
         }
 }
+    void Aplication::readFromCsv(const std::string &fileName){
+        std::ifstream file(fileName);
+        if(!file.is_open()){
+                std::cerr<<"Cannot open this file"<<"\n";
+        }
+
+        std::string line;
+        std::string tagName;
+        std::string textMessage;
+        while(std::getline(file,line)){
+                std::size_t pos = line.find(';');
+                tagName = line.substr(0,pos);
+                textMessage = line.substr(pos+1);
+                dataToUpdate[tagName] = std::make_tuple(textMessage,0);
+        }
+        file.close();
+        for(auto it: dataToUpdate){
+               std::cout<< it.first<< " "<<std::get<1>(it.second)<<"\n";
+        }
+    }
+
 
 void Aplication::menu()
 {
