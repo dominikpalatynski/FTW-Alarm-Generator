@@ -25,11 +25,35 @@ void Aplication::prepareStrings()
                 {
                         byteCounter++;
                 }
-                generatedAlarms.emplace_back(T1 + std::to_string(i + 1), tag.name + '[' + std::to_string(byteCounter - 1) + "]." + std::to_string(bitCounter), T2 + std::to_string(i + 1), i);
+                generatedAlarms.emplace_back(T1 + std::to_string(i + 1), tag.name , T2 + std::to_string(i + 1), i);
                 generatedMessages.emplace_back(M1 + std::to_string(i + 1), M2 + std::to_string(i + 1), i);
                 prev = i % bitValue;
                 bitCounter++;
         }
+}
+void Aplication::prepareStrings(int numOfAlamrs, int firstTriggerNumber){
+        std::string T1 = "<trigger id=\"T";
+        std::string T2 = "label=\"";
+        
+        std::string M1 = "<message id=\"M";
+        std::string M2 = "\" trigger-value=\"1\" identifier=\"0\" trigger=\"#T";
+
+                int vecIndex = 0;
+                int i = firstTriggerNumber;
+                for(auto el:dataToUpdate){
+                generatedAlarms.emplace_back(T1 + std::to_string(i + 1), el.first , T2 + std::to_string(i + 1), i);
+                generatedMessages.emplace_back(M1 + std::to_string(i + 1), M2 + std::to_string(i + 1), i);
+                generatedMessages[vecIndex].replace(std::get<0>(el.second));
+
+
+                i++;
+                vecIndex++;
+                }
+        std::cout<<"Addition to vector done"<<"\n";
+               
+              
+               
+        
 }
 void Aplication::prepareBlankFrame()
 {
@@ -205,6 +229,32 @@ int Aplication::readLastIndex(const std::string &combLine, const std::string &st
         }
     }
 
+  
+    void Aplication::generateFromExcel(){
+        std::string fileInput;
+        std::cout << "Give CSV file name \n";
+        std::cin >> fileInput;
+        readFromCsv( fileInput);
+        prepareStrings(dataToUpdate.size(),0);
+        prepareBlankFrame();
+
+        std::string filename;
+        std::cout << "Give file name \n";
+        std::cin >> filename;
+        filename += ".xml";
+        std::ofstream file(filename, std::ios::out);
+        if (file.is_open())
+        {
+                file << blankStream.str();
+                file.close();
+                std::cout << "Pomyślnie utworzono i zapisano do pliku " << filename << std::endl;
+        }
+        else
+        {
+                std::cerr << "Nie można utworzyć pliku " << filename << " do zapisu" << std::endl;
+        }
+    }
+
 
 void Aplication::menu()
 {
@@ -214,7 +264,7 @@ void Aplication::menu()
             {2, [&]()
              { printBlankFrametoXmlFile(); }},
             {3, [&]()
-             { updateFile(); }}
+             { generateFromExcel(); }}
 
         };
         int choice;

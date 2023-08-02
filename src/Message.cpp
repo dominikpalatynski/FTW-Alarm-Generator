@@ -3,6 +3,7 @@ Message::Message(const std::string &M1, const std::string &M2, int idNumber)
     : combinedLine(M1 + M2 + constString.text_1), messageVariables(idNumber, MessageValues(constString.text_1)) {}
 Message::Message(const std::string &combine) :  messageVariables({readLastIndex(combine, "id=\"M"), MessageValues(findPhrase(combine, "text=\"", "\"/"))}),
         combinedLine(combine){};
+   
 int Message::readLastIndex(const std::string &combLine, const std::string &startValue)
 {
         std::size_t startVal = combLine.find(startValue);
@@ -38,10 +39,19 @@ std::string Message::findPhrase(const std::string &combine, const std::string &o
         void Message::setMessageVariables(const std::string &value){
                 messageVariables.second.messageText = value;
         }
-    void Message::replace(const std::string &newValue){
-        size_t startPos =  combinedLine.find( messageVariables.second.messageText);
-         size_t endPos = startPos + messageVariables.second.messageText.length();
-        combinedLine.replace(startPos, endPos - startPos, newValue);
-        setMessageVariables(newValue);
+void Message::replace(const std::string &newValue) {
+    size_t startPos = combinedLine.find("text=\"");
+    if (startPos != std::string::npos) {
+        startPos += 6;  // Move startPos to the beginning of the actual text value
+        size_t endPos = combinedLine.find("\"", startPos);
+        if (endPos != std::string::npos) {
+            combinedLine.replace(startPos, endPos - startPos, newValue);
+        }
     }
+    setMessageVariables(newValue);
+}
+
+
+
+
 

@@ -37,5 +37,7 @@ public:
     int readLastIndex(const std::string &combLine, const std::string &startValue);
     std::string findPhrase(const std::string &combine, const std::string &open, const std::string &end);
     void readFromCsv(const std::string &fileName);
+    void generateFromExcel();
+    void prepareStrings(int numOfAlamrs, int firstTriggerNumber);
     void menu();
 };

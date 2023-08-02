@@ -20,6 +20,7 @@ private:
 public:
     std::string combinedLine;
     Message(const std::string &M1, const std::string &M2, int idNumber);
+
     Message(const std::string &combine);
     int readLastIndex(const std::string &combLine, const std::string &startValue);
     std::string findPhrase(const std::string &combine, const std::string &open, const std::string &end);
